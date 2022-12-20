@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <style>
+        .body {
+    text-align: center;
+    padding: 100px 60px;
+    background: #90cbf3;
+    font-family: sans-serif;
+    font-weight: lighter;
+}
+
+
+#timer {
+    font-size: 3em;
+    font-weight: 100;
+    color: white;
+    padding: 20px;
+    width: 700px;
+    color: white;
+
+}
+
+#timer div {
+    display: inline-block;
+    min-width: 90px;
+    padding: 15px;
+    background: #020b43;
+    border-radius: 10px;
+    border: 2px solid #030d52;
+    margin: 15px;
+}
+
+#timer div span {
+    color: #ffffff;
+    display: block;
+    margin-top: 15px;
+    font-size: .35em;
+    font-weight: 400;
+}
+
+    </style>
+    
+    <div id="timer"></div>
+    <!-- <script src="js/countdown.js"></script> -->
+<script>
+const SECOND = 1000;
+const MINUTE = 60 * SECOND;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+
+/**
+ * Calculates the difference between two timestamps, returns a quadruple with
+ * the difference in days, hours, minutes and seconds.
+ *
+ * @param {number} future
+ */
+const timestampDiff =
+    future =>
+    /** @param {number} past */
+    past =>
+        [DAY, HOUR, MINUTE, SECOND].map((time, index, times) => {
+            const diff = future - past;
+            const previousTime = times[index - 1];
+
+            return (
+                Math.floor(diff / time) -
+                (Math.floor(diff / previousTime) * (previousTime / time) || 0)
+            );
+        });
+
+/**
+ * Start timer and set the content of the element.
+ *
+ * @param {string} date
+ */
+const timer =
+    date =>
+    /** @param {HTMLElement} target */
+    target => {
+        const diff = timestampDiff(Date.parse(date));
+
+        return setInterval(() => {
+            const [days, hours, minutes, seconds] = diff(Date.now());
+
+            // Ideally we should have targets for every element
+            // to avoid updating the entire innerHTML of the container with
+            // every tick.
+            target.innerHTML = `
+                <div>${days}<span>Days</span></div>
+                <div>${hours}<span>Hours</span></div>
+                <div>${minutes}<span>Minutes</span></div>
+                <div>${seconds}<span>Seconds</span></div>
+            `;
+        }, SECOND);
+    };
+
+// We finally run it (and we save the interval return value if we wan to stop it later)
+const interval = timer("25 December, 2022 00:00:00")(document.querySelector("#timer"));
+
+5
+
+
+</script>
+</body>
+</html>
